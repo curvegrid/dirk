@@ -35,6 +35,14 @@ jobs:
         run: |
           git checkout FETCH_HEAD -- Dockerfile .dockerignore
 
+      - name: Derive image tag
+        id: image_tag
+        run: |
+          image_tag="${INPUT_TAG#v}"
+          echo "value=$image_tag" >> "$GITHUB_OUTPUT"
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
 
@@ -56,6 +64,6 @@ jobs:
           platforms: |
             linux/amd64
             linux/arm64
-          tags: ghcr.io/${{ github.repository }}:${{ inputs.tag }}
+          tags: ghcr.io/${{ github.repository }}:${{ steps.image_tag.outputs.value }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
