@@ -38,6 +38,7 @@ jobs:
       - name: Patch go-majordomo dependency
         run: |
           go mod edit -replace=github.com/wealdtech/go-majordomo=github.com/curvegrid/go-majordomo@v1.1.2-curvegrid-patched.1
+          go mod download github.com/wealdtech/go-majordomo
 
       - name: Derive image tag
         id: image_tag
