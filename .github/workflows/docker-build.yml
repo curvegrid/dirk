@@ -2,6 +2,9 @@ name: Docker Build
 
 run-name: Docker Build ${{ inputs.tag }}
 
+env:
+  IMAGE_NAME: ghcr.io/curvegrid/dirk-asm-pod-identity
+
 on:
   workflow_dispatch:
     inputs:
@@ -69,6 +72,6 @@ jobs:
           platforms: |
             linux/amd64
             linux/arm64
-          tags: ghcr.io/${{ github.repository }}:${{ steps.image_tag.outputs.value }}
+          tags: ${{ env.IMAGE_NAME }}:${{ steps.image_tag.outputs.value }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
