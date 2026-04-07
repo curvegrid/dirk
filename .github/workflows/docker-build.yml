@@ -1,6 +1,6 @@
 name: Docker Build
 
-run-name: Docker Build ${{ inputs.tag }}
+run-name: Docker Build ${{ inputs.tag }}-${{ inputs.image_tag_suffix || 'curvegrid.1' }}
 
 on:
   workflow_dispatch:
@@ -8,6 +8,11 @@ on:
       tag:
         description: Upstream tag to build and publish
         required: true
+        type: string
+      image_tag_suffix:
+        description: Optional image tag suffix to append after the upstream version
+        required: false
+        default: curvegrid.1
         type: string
 
 jobs:
@@ -43,10 +48,11 @@ jobs:
       - name: Derive image tag
         id: image_tag
         run: |
-          image_tag="${INPUT_TAG#v}-asm-pod-identity"
+          image_tag="${INPUT_TAG#v}-${IMAGE_TAG_SUFFIX}"
           echo "value=$image_tag" >> "$GITHUB_OUTPUT"
         env:
           INPUT_TAG: ${{ inputs.tag }}
+          IMAGE_TAG_SUFFIX: ${{ inputs.image_tag_suffix || 'curvegrid.1' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
